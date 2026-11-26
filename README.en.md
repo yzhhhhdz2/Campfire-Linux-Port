@@ -17,6 +17,10 @@
 </p>
 
 <p align="center">
+  <b>Download for Linux</b>: <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/latest">latest release</a> · <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/Campfire-1.1.32-x86_64.AppImage">AppImage (no install, recommended)</a> · <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/campfire-1.1.32-linux-x64.tar.gz">tar.gz (user-level install)</a> · <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/SHA256SUMS">checksums</a>
+</p>
+
+<p align="center">
   Community: <a href="https://t.me/CampfireGroup">Telegram group</a> · <a href="https://t.me/McCampfire">Telegram channel</a>
 </p>
 

@@ -17,6 +17,10 @@
 </p>
 
 <p align="center">
+  <b>Linux 直接下载</b>：<a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/latest">Releases 最新版</a> · <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/Campfire-1.1.32-x86_64.AppImage">AppImage（免安装，推荐）</a> · <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/campfire-1.1.32-linux-x64.tar.gz">tar.gz（用户级安装）</a> · <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/SHA256SUMS">校验和</a>
+</p>
+
+<p align="center">
   交流：<a href="https://t.me/CampfireGroup">Telegram 群聊</a> · <a href="https://t.me/McCampfire">Telegram 频道</a>
 </p>
 
