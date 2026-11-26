@@ -1,0 +1,333 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：把原 Themes/Controls.xaml 的 Pcl* 样式移植成 Avalonia Styles。
+     第一批还原配色、圆角、尺寸与选中/悬停态；第二批接入动态主题时再补 400ms 过渡动画。
+     Avalonia 没有 HeaderedContentControl，卡片用 Border.pcl-card + TextBlock.pcl-card-title 还原。
+     主页磁贴/步骤样式逐值照抄原 Pages/HomePage.xaml 的 TileIcon / TileGlyph / TileTitle /
+     TileText / SmallTileIcon / StepNumber / StepNumberText / StepText。 -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============ 卡片 ============ -->
+    <Style Selector="Border.pcl-card">
+        <Setter Property="Background" Value="{DynamicResource BrushCard}" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushShadowRing}" />
+        <Setter Property="Padding" Value="15,10,15,15" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+    <Style Selector="TextBlock.pcl-card-title">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush2}" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+    <Style Selector="TextBlock.pcl-note">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource BrushGray3}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.pcl-title">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+
+    <!-- ============ 提示条（原 PclHint / Green / Red / Orange） ============ -->
+    <Style Selector="Border.pcl-hint">
+        <Setter Property="Background" Value="{DynamicResource BrushCard}" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush3}" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Padding" Value="13,8,12,8" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+    <Style Selector="Border.pcl-hint-green">
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushGreen}" />
+    </Style>
+    <Style Selector="Border.pcl-hint-red">
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushRed}" />
+    </Style>
+    <Style Selector="Border.pcl-hint-orange">
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushOrange}" />
+    </Style>
+
+    <!-- ============ 按钮（原 PclButton / Highlight / TextButton / DangerTextButton） ============ -->
+    <Style Selector="Button.pcl">
+        <Setter Property="Height" Value="35" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush1}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.pcl:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource Brush3}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush3}" />
+        <Setter Property="Background" Value="{DynamicResource Brush8}" />
+    </Style>
+    <Style Selector="Button.pcl:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource BrushGray5}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushGray5}" />
+    </Style>
+    <Style Selector="Button.pcl-highlight">
+        <Setter Property="Foreground" Value="{DynamicResource BrushOnAccent}" />
+        <Setter Property="Background" Value="{DynamicResource Brush3}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush3}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="Button.pcl-highlight:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Brush2}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush2}" />
+    </Style>
+    <Style Selector="Button.pcl-text">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush3}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="Button.pcl-text:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource Brush4}" />
+    </Style>
+    <Style Selector="Button.pcl-danger">
+        <Setter Property="Foreground" Value="{DynamicResource BrushRed}" />
+    </Style>
+
+    <!-- 标题栏右上角的 32x32 圆按钮 -->
+    <Style Selector="Button.pcl-titlebar">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource BrushWhite}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.pcl-titlebar:pointerover">
+        <Setter Property="Background" Value="#33FFFFFF" />
+    </Style>
+
+    <!-- ============ 输入框（原 PclTextBox；WPF 的 Tag 占位符改用 Avalonia Watermark） ============ -->
+    <Style Selector="TextBox.pcl">
+        <Setter Property="Height" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+        <Setter Property="Background" Value="{DynamicResource BrushInput}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush5}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBox.pcl:focus">
+        <Setter Property="Background" Value="{DynamicResource BrushInputFocus}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush3}" />
+    </Style>
+
+    <!-- ============ 顶部胶囊 Tab（原 PclTabButton） ============
+         Template 用 ContentPresenter，好让 Content 里放「Path 图标 + 文字」的 StackPanel，
+         与原 MainWindow.xaml:96-143 一致。图标和文字的 Foreground 绑到 RadioButton 自身，
+         选中时随 :checked 一起变成橙色。 -->
+    <Style Selector="RadioButton.pcl-tab">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinWidth" Value="82" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource BrushWhite}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="14,0" />
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="Pill"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="14"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton.pcl-tab:pointerover /template/ Border#Pill">
+        <Setter Property="Background" Value="#33FFFFFF" />
+    </Style>
+    <Style Selector="RadioButton.pcl-tab:checked /template/ Border#Pill">
+        <Setter Property="Background" Value="{DynamicResource BrushWhite}" />
+    </Style>
+    <Style Selector="RadioButton.pcl-tab:checked">
+        <Setter Property="Foreground" Value="{DynamicResource BrushTitleAccent}" />
+    </Style>
+
+    <!-- ============ 设置页左侧导航（原 PclNavItem，高 38） ============ -->
+    <Style Selector="RadioButton.pcl-nav">
+        <Setter Property="Height" Value="38" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="Margin" Value="4,2" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="Row"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="6"
+                        Padding="{TemplateBinding Padding}">
+                    <TextBlock Text="{TemplateBinding Content}"
+                               Foreground="{TemplateBinding Foreground}"
+                               FontSize="{TemplateBinding FontSize}"
+                               VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton.pcl-nav:pointerover /template/ Border#Row">
+        <Setter Property="Background" Value="{DynamicResource BrushCardHover}" />
+    </Style>
+    <Style Selector="RadioButton.pcl-nav:checked">
+        <Setter Property="Foreground" Value="{DynamicResource Brush3}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="RadioButton.pcl-nav:checked /template/ Border#Row">
+        <Setter Property="Background" Value="{DynamicResource BrushSurface}" />
+    </Style>
+
+    <!-- ============ 主页磁贴 / 入口行（原 PclTile / PclEntry） ============ -->
+    <Style Selector="Button.pcl-tile">
+        <!-- 全屏/拉宽窗口时磁贴要跟着 Grid 的 * 列一起伸展，
+             否则会各自缩成内容宽度、散落在等分列的起点上（看起来像错位）。 -->
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource BrushTile}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush6}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="14,14,12,13" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+    <Style Selector="Button.pcl-tile:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrushCardHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush5}" />
+    </Style>
+    <Style Selector="Button.pcl-entry">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush6}" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="8,10" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+    <Style Selector="Button.pcl-entry:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Brush8}" />
+    </Style>
+
+    <!-- ============ 主页磁贴图标与文字（原 HomePage.xaml:28-65） ============ -->
+    <Style Selector="Border.pcl-tile-icon">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Background" Value="{DynamicResource Brush7}" />
+    </Style>
+    <Style Selector="Border.pcl-tile-icon-small">
+        <Setter Property="Width" Value="34" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="CornerRadius" Value="17" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="{DynamicResource Brush7}" />
+    </Style>
+    <Style Selector="Path.pcl-glyph">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Stretch" Value="None" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Stroke" Value="{DynamicResource Brush3}" />
+        <Setter Property="StrokeThickness" Value="2" />
+    </Style>
+    <Style Selector="TextBlock.pcl-tile-title">
+        <Setter Property="Margin" Value="0,12,0,0" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+    <Style Selector="TextBlock.pcl-tile-text">
+        <Setter Property="Margin" Value="0,3,0,0" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{DynamicResource BrushGray4}" />
+    </Style>
+
+    <!-- ============ 联机步骤编号（原 HomePage.xaml:8-26） ============ -->
+    <Style Selector="Border.pcl-step-number">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="{DynamicResource Brush7}" />
+    </Style>
+    <Style Selector="TextBlock.pcl-step-number-text">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush3}" />
+    </Style>
+    <Style Selector="TextBlock.pcl-step-text">
+        <Setter Property="Margin" Value="12,2,0,0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+
+    <!-- ============ 第二批：设置页「个性化」分区的动态主题控件 ============ -->
+    <Style Selector="Button.pcl-swatch">
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Margin" Value="0,0,8,8" />
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushWhite}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.pcl-swatch:pointerover">
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush3}" />
+    </Style>
+    <Style Selector="ComboBox.pcl">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+    <Style Selector="CheckBox.pcl">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush1}" />
+    </Style>
+
+    <!-- ============ 交互微动效 ============
+         2026-11-25 起统一由 Controls/UiAnimations.cs 接管：悬停放大 + 抬升、按压回缩、
+         松开弹性回弹、点击涟漪、数值脉冲、色板选中弹出、卡片轻抬升。
+         RenderTransform 由引擎的多通道合成系统独占，这里不再设置，避免两套值互相覆盖；
+         本文件只保留随 :pointerover / :pressed 变化的颜色态（画刷由 ThemeManager 管理，
+         不参与动画，否则会和 400ms 主题插值动画套动画）。 -->
+
+</Styles>

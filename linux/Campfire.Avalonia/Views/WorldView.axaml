@@ -1,0 +1,25 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：保留导入页结构，第一批先放说明（目录扫描安排在第二批）。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.WorldView">
+
+    <ScrollViewer Margin="22,20,22,18" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[MapsImport]}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Notice}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[WorldDetectedDirs]}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Paths}"
+                               FontFamily="{DynamicResource FontCode}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,141 @@
+# Campfire Linux port — 新增（非改写）：在 Linux runner 上构建面向最终用户的发布资产。
+# Windows 开发机没有 WSL/Docker/appimagetool，无法本地产出 AppImage；这条流水线
+# 让 GitHub 自己构建，tag 一推就自动把 .AppImage / .tar.gz 挂到 Release。
+name: Build Linux release assets
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version, e.g. 1.1.32'
+        required: false
+        default: '1.1.32'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04   # glibc 2.35，产出能跑在较老发行版上的 AppImage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Resolve version / app-id / homepage
+        id: meta
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          [ -n "$VERSION" ] || VERSION="1.1.32"
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9_-')"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+          echo "app_id=io.github.${OWNER}.Campfire" >> "$GITHUB_OUTPUT"
+          echo "repo_url=${{ github.server_url }}/${{ github.repository }}" >> "$GITHUB_OUTPUT"
+          echo "构建版本 $VERSION / app-id io.github.${OWNER}.Campfire"
+
+      - name: Fetch EasyTier 2.6.4 (LGPL-3.0, unmodified) and its license text
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --max-time 300 \
+            -o linux/easytier-linux-x86_64-v2.6.4.zip \
+            https://github.com/EasyTier/EasyTier/releases/download/v2.6.4/easytier-linux-x86_64-v2.6.4.zip
+          curl -fL --retry 3 --max-time 60 \
+            -o linux/release/assets/LGPL-3.0.txt \
+            https://www.gnu.org/licenses/lgpl-3.0.txt
+          echo "EasyTier: $(du -h linux/easytier-linux-x86_64-v2.6.4.zip | cut -f1)"
+
+      - name: Build self-contained tar.gz installer
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          APP_ID: ${{ steps.meta.outputs.app_id }}
+          REPO_URL: ${{ steps.meta.outputs.repo_url }}
+          RELEASE_DATE: ${{ steps.meta.outputs.date }}
+        run: bash linux/pack-release.sh
+
+      - name: Build AppImage
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          APP_ID: ${{ steps.meta.outputs.app_id }}
+        run: |
+          set -euo pipefail
+          TARBALL="linux/dist/campfire-${VERSION}-linux-x64.tar.gz"
+          bash linux/release/build-appimage.sh "$TARBALL" "Campfire-${VERSION}-x86_64.AppImage"
+          ls -lh "Campfire-${VERSION}-x86_64.AppImage"
+
+      - name: Build corresponding-source archive (GPL-3.0 requirement)
+        run: |
+          set -euo pipefail
+          bash linux/pack-for-linux.sh
+          ls -lh linux/campfire-linux.tar.gz
+
+      - name: Produce SHA256SUMS
+        run: |
+          set -euo pipefail
+          {
+            cat linux/dist/campfire-*.tar.gz.sha256
+            cat linux/campfire-linux.tar.gz.sha256
+            sha256sum Campfire-*.AppImage
+          } > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: campfire-linux-release
+          path: |
+            linux/dist/campfire-*.tar.gz
+            linux/dist/campfire-*.tar.gz.sha256
+            linux/campfire-linux.tar.gz
+            linux/campfire-linux.tar.gz.sha256
+            Campfire-*.AppImage
+            SHA256SUMS
+          if-no-files-found: error
+
+      - name: Attach assets to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            linux/dist/campfire-*.tar.gz
+            linux/dist/campfire-*.tar.gz.sha256
+            linux/campfire-linux.tar.gz
+            linux/campfire-linux.tar.gz.sha256
+            Campfire-*.AppImage
+            SHA256SUMS
+          body: |
+            ## Campfire for Linux (x86-64)
+
+            Based on Xocio/Campfire v1.1.32 (GPL-3.0), ported to .NET 8 / Avalonia 11.
+
+            **Pick one:**
+            - `Campfire-VERSION-x86_64.AppImage` — single file, no install needed:
+              `chmod +x Campfire-*.AppImage && ./Campfire-*.AppImage`
+            - `campfire-VERSION-linux-x64.tar.gz` — user-level install, no root:
+              `tar -xzf campfire-*.tar.gz` then `cd` into it and `bash install.sh`
+
+            Both are self-contained: no system .NET required, nothing installed outside
+            `$HOME` (works on immutable systems such as Bazzite / Fedora Silverblue).
+
+            `campfire-linux.tar.gz` is the **complete corresponding source** for these
+            binaries (GPL-3.0-or-later): all C#/XAML sources, the linked unmodified
+            protocol layer, the 40 legacy Mappings tables and the full `src/java-agent/`
+            sources. See `docs/SOURCE.txt` inside the binary archive.
+
+            Minecraft and a JDK are **not** included and are never redistributed here.
+            EasyTier 2.6.4 (LGPL-3.0, unmodified) is bundled for offline first-run
+            multiplayer; see `docs/THIRD-PARTY-NOTICES.md` and `docs/LGPL-3.0.txt`.
+
+            Verify downloads with `sha256sum -c SHA256SUMS`.
+          draft: false

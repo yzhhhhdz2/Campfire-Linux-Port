@@ -1,0 +1,50 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：自建大厅房间列表。第一批只做 list + join（点房间取邀请码后走同一条加入链），
+     不做 Publish/心跳；未配置服务时给出地址输入，但不影响邀请码联机。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.LobbyView">
+
+    <ScrollViewer Margin="22,20,22,18" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <Border Classes="pcl-hint">
+                <TextBlock Classes="pcl-note" Text="{Binding Status}" />
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[LobbyServiceAddress]}" />
+                    <TextBox Classes="pcl" Text="{Binding ServiceUrl}"
+                             Watermark="http://127.0.0.1:5080" Margin="0,0,0,8" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Classes="pcl" Content="{Binding L[CommonSave]}" Command="{Binding SaveService}" />
+                        <Button Classes="pcl" Content="{Binding L[CommonRefresh]}" Command="{Binding RefreshCommand}" Margin="8,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[LobbyPublicRooms]}" />
+                    <ItemsControl ItemsSource="{Binding Rooms}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="pcl-entry" Command="{Binding Join}" CommandParameter="{Binding}">
+                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource Brush1}" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-hint pcl-hint-green">
+                <TextBlock Classes="pcl-note"
+                           Text="{Binding L[LobbyNote]}" />
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

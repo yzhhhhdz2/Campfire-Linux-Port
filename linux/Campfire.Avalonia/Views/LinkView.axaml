@@ -1,0 +1,110 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：联机房。对应原 LinkPage 的建房/加入、邀请码大字、状态、玩家列表；
+     模组对比、语音、世界备份、公开到大厅等已裁剪功能不显示。
+     动效：邀请码由 UiAnimations 打字机逐字写入（故不用 Binding）；
+     Classes="pcl-live" 的文本在状态刷新时弹一下，见 Controls/UiAnimations.cs。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.LinkView">
+
+    <ScrollViewer Margin="22,20,22,18" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding RoomTitle}" />
+
+                    <StackPanel IsVisible="{Binding Hosting}">
+                        <CheckBox IsChecked="{Binding AutoLan}" Margin="0,0,0,8"
+                                  Content="{Binding L[LinkAutoLan]}" />
+                        <TextBlock Classes="pcl-note" Text="{Binding L[LinkHostPort]}" />
+                        <TextBox Classes="pcl" Text="{Binding Port}" Watermark="43210"
+                                 IsEnabled="{Binding ManualPortEnabled}" Margin="0,6,0,8" />
+                        <TextBlock Classes="pcl-note" FontSize="11" Margin="0,0,0,10"
+                                   Text="{Binding AutoLanHint}"
+                                   IsVisible="{Binding AutoLan}" />
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding !Hosting}">
+                        <TextBlock Classes="pcl-note" Text="{Binding L[LinkCodeLabel]}" />
+                        <TextBox Classes="pcl" Text="{Binding CodeInput}"
+                                 Watermark="U/XXXX-XXXX-XXXX-XXXX"
+                                 FontFamily="{DynamicResource FontCode}" Margin="0,6,0,10" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Classes="pcl pcl-highlight" Content="{Binding StartLabel}" Command="{Binding Start}" />
+                        <Button Classes="pcl" Content="{Binding StopLabel}" Command="{Binding Stop}" Margin="8,0,0,0" />
+                    </StackPanel>
+                    <TextBlock Classes="pcl-note" Text="{Binding Message}" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- 邀请码只有房主需要：StartJoin 会把 Code 设成「输入的邀请码」，
+                 若加入页也显示这张卡片，就会误以为自己拿到了可分享的房间码。 -->
+            <Border Classes="pcl-card" IsVisible="{Binding Hosting}">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[LinkCodeLabel]}" />
+                    <TextBlock x:Name="CodeText" FontSize="24"
+                               FontFamily="{DynamicResource FontCode}"
+                               Foreground="{DynamicResource Brush3}" />
+                    <TextBlock Classes="pcl-note" Margin="0,6,0,0"
+                               Text="{Binding L[LinkShareHint]}" />
+                </StackPanel>
+            </Border>
+
+            <!-- 加入方真正需要的是「本机连到房主世界的地址」，不是邀请码。
+                 这张卡片让加入页与建房页有实质区别，而不只是差几个标题汉字。 -->
+            <Border Classes="pcl-card" IsVisible="{Binding !Hosting}">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[LinkConnectionInfo]}" />
+                    <TextBlock Classes="pcl-live" Text="{Binding Session.ConnectionAddress}" FontSize="24"
+                               FontFamily="{DynamicResource FontCode}"
+                               Foreground="{DynamicResource Brush3}" />
+                    <TextBlock Classes="pcl-note" Margin="0,6,0,0"
+                               Text="{Binding L[LinkConnectionHint]}" />
+                    <TextBlock Classes="pcl-note" FontSize="11" Margin="0,6,0,0"
+                               Text="{Binding L[LinkRoomLayerNote]}" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[LinkRoomStatus]}" />
+                    <TextBlock Classes="pcl-live" Text="{Binding Session.StatusText}"
+                               FontSize="14" FontWeight="Bold"
+                               Foreground="{DynamicResource Brush1}" Margin="0,0,0,8" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Session.RoleText}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Session.StageText}" />
+                    <TextBlock Classes="pcl-note pcl-live"
+                               Text="{Binding Session.PlayersText}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Session.PlayerListText}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Session.LocalPortText}"
+                               IsVisible="{Binding Session.HasConnection}" />
+                    <Border Classes="pcl-hint pcl-hint-red" Margin="0,8,0,0"
+                            IsVisible="{Binding Session.HasError}">
+                        <TextBlock Classes="pcl-note" Text="{Binding Session.Error}" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[LinkLog]}" />
+                    <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding LogLines}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="11"
+                                               Foreground="{DynamicResource BrushGray1}"
+                                               FontFamily="{DynamicResource FontCode}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

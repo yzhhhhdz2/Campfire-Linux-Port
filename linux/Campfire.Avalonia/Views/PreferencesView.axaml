@@ -1,0 +1,197 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：保留原 PreferencesPage 的 132px 左侧栏 + 6 分区壳，只隐藏已裁剪功能的开关。
+     个性化分区第二批接入完整动态主题（模式 / 风格 / 9 色板 / 自定义色 / 壁纸候选 / 当前状态）。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.PreferencesView">
+
+    <Grid ColumnDefinitions="132,*">
+        <Border Grid.Column="0" Background="{DynamicResource BrushCard}" CornerRadius="0,0,0,6">
+            <StackPanel Margin="0,12,0,0">
+                <RadioButton Classes="pcl-nav" GroupName="Prefs" Content="{Binding L[PrefsPersonalize]}"
+                             IsChecked="{Binding PersonalizeVisible, Mode=OneWay}"
+                             Command="{Binding ShowPersonalize}" />
+                <RadioButton Classes="pcl-nav" GroupName="Prefs" Content="{Binding L[PrefsGeneral]}"
+                             IsChecked="{Binding GeneralVisible, Mode=OneWay}"
+                             Command="{Binding ShowGeneral}" />
+                <RadioButton Classes="pcl-nav" GroupName="Prefs" Content="{Binding L[PrefsLink]}"
+                             IsChecked="{Binding LinkVisible, Mode=OneWay}"
+                             Command="{Binding ShowLink}" />
+                <RadioButton Classes="pcl-nav" GroupName="Prefs" Content="{Binding L[PrefsSupport]}"
+                             IsChecked="{Binding SupportVisible, Mode=OneWay}"
+                             Command="{Binding ShowSupport}" />
+                <RadioButton Classes="pcl-nav" GroupName="Prefs" Content="{Binding L[PrefsAbout]}"
+                             IsChecked="{Binding AboutVisible, Mode=OneWay}"
+                             Command="{Binding ShowAbout}" />
+                <RadioButton Classes="pcl-nav" GroupName="Prefs" Content="{Binding L[PrefsLicenses]}"
+                             IsChecked="{Binding LicensesVisible, Mode=OneWay}"
+                             Command="{Binding ShowLicenses}" />
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Column="1" Margin="4,12,12,10" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!-- 个性化：第二批接入完整动态主题（OKLCH 调色板 + 9 色板 + 6 风格 + 壁纸取色） -->
+                <StackPanel IsVisible="{Binding PersonalizeVisible}">
+
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsAppearance]}" />
+                            <ComboBox Classes="pcl" SelectedIndex="{Binding ModeIndex}"
+                                      Width="220" HorizontalAlignment="Left" Margin="0,0,0,8">
+                                <ComboBoxItem Content="{Binding L[PrefsModeSystem]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsModeLight]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsModeDark]}" />
+                            </ComboBox>
+                            <TextBlock Classes="pcl-note" Text="{Binding L[PrefsModeNote]}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsStyle]}" />
+                            <ComboBox Classes="pcl" SelectedIndex="{Binding StyleIndex}"
+                                      Width="220" HorizontalAlignment="Left" Margin="0,0,0,8">
+                                <ComboBoxItem Content="{Binding L[PrefsStyleTonalSpot]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsStyleVibrant]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsStyleExpressive]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsStyleNeutral]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsStyleMonochrome]}" />
+                                <ComboBoxItem Content="{Binding L[PrefsStyleFidelity]}" />
+                            </ComboBox>
+                            <TextBlock Classes="pcl-note" TextWrapping="Wrap"
+                                       Text="{Binding L[PrefsStyleNote]}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsSeedColor]}" />
+                            <WrapPanel Margin="0,0,0,8">
+                                <Button Classes="pcl-swatch" Background="#E2680C" Command="{Binding PickColor}" CommandParameter="#E2680C" />
+                                <Button Classes="pcl-swatch" Background="#D93A3A" Command="{Binding PickColor}" CommandParameter="#D93A3A" />
+                                <Button Classes="pcl-swatch" Background="#D94A8C" Command="{Binding PickColor}" CommandParameter="#D94A8C" />
+                                <Button Classes="pcl-swatch" Background="#8E5BD6" Command="{Binding PickColor}" CommandParameter="#8E5BD6" />
+                                <Button Classes="pcl-swatch" Background="#3D6FE0" Command="{Binding PickColor}" CommandParameter="#3D6FE0" />
+                                <Button Classes="pcl-swatch" Background="#149CB5" Command="{Binding PickColor}" CommandParameter="#149CB5" />
+                                <Button Classes="pcl-swatch" Background="#2E9E5B" Command="{Binding PickColor}" CommandParameter="#2E9E5B" />
+                                <Button Classes="pcl-swatch" Background="#C99A06" Command="{Binding PickColor}" CommandParameter="#C99A06" />
+                                <Button Classes="pcl-swatch" Background="#8D6E5A" Command="{Binding PickColor}" CommandParameter="#8D6E5A" />
+                            </WrapPanel>
+                            <Button Classes="pcl" Content="{Binding L[PrefsUseSystemAccent]}" HorizontalAlignment="Left"
+                                    Command="{Binding PickColor}" CommandParameter="system" Margin="0,0,0,10" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Classes="pcl" Text="{Binding CustomColor}" Watermark="#3D6FE0" Width="150" />
+                                <Button Classes="pcl" Content="{Binding L[CommonApply]}" Command="{Binding ApplyCustomColor}" Margin="8,0,0,0" />
+                            </StackPanel>
+                            <TextBlock Classes="pcl-note" Text="{Binding ThemeStatus}" Margin="0,8,0,0" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsWallpaper]}" />
+                            <CheckBox Classes="pcl" IsChecked="{Binding UseWallpaper}"
+                                      Content="{Binding L[PrefsWallpaperCheck]}" Margin="0,0,0,8" />
+                            <Button Classes="pcl" Content="{Binding L[PrefsWallpaperRefresh]}" HorizontalAlignment="Left"
+                                    Command="{Binding RefreshWallpaper}" Margin="0,0,0,10" />
+                            <ItemsControl ItemsSource="{Binding WallpaperSwatches}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Classes="pcl-swatch" Background="{Binding Brush}"
+                                                Command="{Binding Pick}" ToolTip.Tip="{Binding Hex}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Classes="pcl-note" Text="{Binding WallpaperHint}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsCurrentState]}" />
+                            <TextBlock Classes="pcl-note" Text="{Binding ThemeState}" TextWrapping="Wrap" />
+                            <TextBlock Classes="pcl-note" FontSize="11" Margin="0,8,0,0"
+                                       Text="{Binding ThemeNotice}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- 常规 -->
+                <StackPanel IsVisible="{Binding GeneralVisible}">
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsDataStorage]}" />
+                            <TextBlock Classes="pcl-note" Text="{Binding DataDirectory}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsNotPorted]}" />
+                            <TextBlock Classes="pcl-note"
+                                       Text="{Binding L[PrefsNotPortedNote]}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 联机 -->
+                <StackPanel IsVisible="{Binding LinkVisible}">
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsRoom]}" />
+                            <TextBlock Classes="pcl-note" Text="{Binding L[PrefsPlayerName]}" Margin="0,0,0,6" />
+                            <TextBox Classes="pcl" Text="{Binding PlayerName}" Watermark="{Binding L[PrefsPlayerNameWatermark]}" />
+                            <TextBlock Classes="pcl-note" Margin="0,8,0,0"
+                                       Text="{Binding L[PrefsRoomNote]}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 支持项目 -->
+                <StackPanel IsVisible="{Binding SupportVisible}">
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsSupport]}" />
+                            <TextBlock Classes="pcl-note"
+                                       Text="{Binding L[PrefsSupportNote]}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 关于 -->
+                <StackPanel IsVisible="{Binding AboutVisible}">
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsAbout]}" />
+                            <TextBlock Text="{Binding VersionText}" FontSize="15" FontWeight="Bold"
+                                       Foreground="{DynamicResource Brush1}" Margin="0,0,0,8" />
+                            <TextBlock Classes="pcl-note" Text="{Binding GplText}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 开源许可 -->
+                <StackPanel IsVisible="{Binding LicensesVisible}">
+                    <Border Classes="pcl-card">
+                        <StackPanel>
+                            <TextBlock Classes="pcl-card-title" Text="{Binding L[PrefsLicenses]}" />
+                            <TextBlock Classes="pcl-note"
+                                       Text="Xocio/Campfire v1.1.32 — GPL-3.0" Margin="0,0,0,4" />
+                            <TextBlock Classes="pcl-note" Text="Avalonia 11 — MIT" Margin="0,0,0,4" />
+                            <TextBlock Classes="pcl-note" Text="SkiaSharp / HarfBuzzSharp — MIT" Margin="0,0,0,4" />
+                            <TextBlock Classes="pcl-note"
+                                       Text="{Binding L[PrefsLicenseEasyTier]}" Margin="0,0,0,4" />
+                            <TextBlock Classes="pcl-note" Text="{Binding L[PrefsLicenseDnlib]}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

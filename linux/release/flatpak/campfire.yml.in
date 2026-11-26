@@ -1,0 +1,51 @@
+# Campfire Linux port — 新增（非改写）：实验性 Flatpak 清单。
+#
+# ⚠ 已知限制（重要）：EasyTier 需要 /dev/net/tun 建立虚拟网卡，而 Flatpak
+# 沙箱默认不授予该设备（--device=all 会被 Flathub 审核拒绝）。因此 Flatpak
+# 内的**联机功能很可能不可用**，仅界面/主题/世界浏览可用。
+# 面向普通用户请优先分发 AppImage（见 release/build-appimage.sh）。
+# 本清单仅供有沙箱调试需求的人参考，GitHub Actions 不自动构建它。
+#
+# 用法（Linux 上）：
+#   cp linux/dist/campfire-@VERSION@-linux-x64.tar.gz linux/release/flatpak/
+#   sed -e 's/@APP_ID@/io.github.OWNER.Campfire/g' -e 's/@VERSION@/1.1.32/g' \
+#       campfire.yml.in > campfire.yml
+#   flatpak-builder --force-clean build-dir campfire.yml
+#   flatpak build-bundle repo Campfire.flatpak io.github.OWNER.Campfire
+
+app-id: @APP_ID@
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: campfire
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+  - --env=LD_LIBRARY_PATH=/app/lib/campfire
+
+modules:
+  - name: campfire
+    buildsystem: simple
+    sources:
+      - type: file
+        path: campfire-@VERSION@-linux-x64.tar.gz
+    build-commands:
+      - tar -xzf campfire-@VERSION@-linux-x64.tar.gz
+      - mkdir -p /app/lib/campfire /app/bin /app/share/applications /app/share/icons/hicolor/256x256/apps /app/share/metainfo /app/share/doc/campfire
+      - cp -a campfire-@VERSION@-linux-x64/payload/. /app/lib/campfire/
+      - chmod 0755 /app/lib/campfire/Campfire.Avalonia
+      - install -Dm0755 /dev/stdin /app/bin/campfire <<'EOF'
+        #!/usr/bin/env bash
+        export LD_LIBRARY_PATH=/app/lib/campfire
+        exec /app/lib/campfire/Campfire.Avalonia "$@"
+        EOF
+      - cp campfire-@VERSION@-linux-x64/assets/campfire.png /app/share/icons/hicolor/256x256/apps/@APP_ID@.png
+      - cp campfire-@VERSION@-linux-x64/assets/campfire.metainfo.xml /app/share/metainfo/@APP_ID@.metainfo.xml
+      - cp campfire-@VERSION@-linux-x64/docs/LICENSE /app/share/doc/campfire/
+      - cp campfire-@VERSION@-linux-x64/docs/THIRD-PARTY-NOTICES.md /app/share/doc/campfire/
+      - sed -e 's|@EXEC@|campfire|g' -e 's|@ICON@|@APP_ID@|g' campfire-@VERSION@-linux-x64/assets/campfire.desktop.in > /app/share/applications/@APP_ID@.desktop

@@ -1,0 +1,74 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：把原 Themes/Colors.xaml 的静态起始色表 1:1 搬到 Avalonia ResourceDictionary。
+     动态主题（Themes/ThemeManager.cs）在 Application.Resources 顶层替换同名键，
+     查找时优先命中顶层、覆盖 MergedDictionaries，{DynamicResource} 自动跟随。
+     Brush1 是主文字色；Brush2..Brush8 由最强强调色到最浅色调。
+     BrushWhite 不被调色板覆盖：标题栏文字在深浅两套主题下都保持白色。 -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="Color1">#4A3A30</Color>
+    <Color x:Key="Color2">#B84A06</Color>
+    <Color x:Key="Color3">#E2680C</Color>
+    <Color x:Key="Color4">#F08F3C</Color>
+    <Color x:Key="Color5">#F7C496</Color>
+    <Color x:Key="Color6">#FCE3CE</Color>
+    <Color x:Key="Color7">#FDEADB</Color>
+    <Color x:Key="Color8">#FEF2E8</Color>
+    <Color x:Key="ColorShadow">#5C2C0A</Color>
+
+    <SolidColorBrush x:Key="Brush1" Color="{StaticResource Color1}" />
+    <SolidColorBrush x:Key="Brush2" Color="{StaticResource Color2}" />
+    <SolidColorBrush x:Key="Brush3" Color="{StaticResource Color3}" />
+    <SolidColorBrush x:Key="Brush4" Color="{StaticResource Color4}" />
+    <SolidColorBrush x:Key="Brush5" Color="{StaticResource Color5}" />
+    <SolidColorBrush x:Key="Brush6" Color="{StaticResource Color6}" />
+    <SolidColorBrush x:Key="Brush7" Color="{StaticResource Color7}" />
+    <SolidColorBrush x:Key="Brush8" Color="{StaticResource Color8}" />
+
+    <SolidColorBrush x:Key="BrushGray1" Color="#404040" />
+    <SolidColorBrush x:Key="BrushGray3" Color="#737373" />
+    <SolidColorBrush x:Key="BrushGray4" Color="#8C8C8C" />
+    <SolidColorBrush x:Key="BrushGray5" Color="#A6A6A6" />
+    <SolidColorBrush x:Key="BrushGray7" Color="#E0E0E0" />
+
+    <!-- 标题栏文字在明暗两套主题里都保持白色 -->
+    <SolidColorBrush x:Key="BrushWhite" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="BrushOnAccent" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="BrushTitleAccent" Color="#E2680C" />
+
+    <SolidColorBrush x:Key="BrushSurface" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="BrushCard" Color="#CDFFFFFF" />
+    <SolidColorBrush x:Key="BrushCardHover" Color="#E6FFFFFF" />
+    <SolidColorBrush x:Key="BrushTile" Color="#99FFFFFF" />
+    <SolidColorBrush x:Key="BrushInput" Color="#E6FFFFFF" />
+    <SolidColorBrush x:Key="BrushInputFocus" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="BrushGreen" Color="#1E9E58" />
+    <SolidColorBrush x:Key="BrushGreenLight" Color="#E3F5EA" />
+    <SolidColorBrush x:Key="BrushRed" Color="#D82929" />
+    <SolidColorBrush x:Key="BrushRedLight" Color="#FDE8E8" />
+    <SolidColorBrush x:Key="BrushOrange" Color="#B86200" />
+    <SolidColorBrush x:Key="BrushOrangeLight" Color="#FDF1E0" />
+    <SolidColorBrush x:Key="BrushDialogMask" Color="#66402614" />
+    <!-- 卡片和窗口四周用来模拟阴影的淡描边 -->
+    <SolidColorBrush x:Key="BrushShadowRing" Color="#305C2C0A" />
+
+    <LinearGradientBrush x:Key="BrushTitleBar" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Offset="0" Color="{StaticResource Color2}" />
+        <GradientStop Offset="0.5" Color="{StaticResource Color3}" />
+        <GradientStop Offset="1" Color="{StaticResource Color2}" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="BrushBackground" StartPoint="10%,0%" EndPoint="90%,100%">
+        <GradientStop Offset="0" Color="#FCF3EA" />
+        <GradientStop Offset="0.5" Color="#F9E8D8" />
+        <GradientStop Offset="1" Color="#F5DCC4" />
+    </LinearGradientBrush>
+
+    <!-- 邀请码、地址等类代码文本 -->
+    <FontFamily x:Key="FontCode">JetBrains Mono, DejaVu Sans Mono, Liberation Mono, monospace</FontFamily>
+    <!-- Linux 没有微软雅黑，按 Noto CJK → 思源黑体 → 文泉驿 → Inter 的顺序回退 -->
+    <FontFamily x:Key="FontMain">Noto Sans CJK SC, Source Han Sans SC, WenQuanYi Micro Hei, Inter, DejaVu Sans, sans-serif</FontFamily>
+
+</ResourceDictionary>

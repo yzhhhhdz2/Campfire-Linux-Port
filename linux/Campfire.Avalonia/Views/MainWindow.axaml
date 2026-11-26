@@ -1,0 +1,175 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：Avalonia 版主窗口。还原原 MainWindow.xaml 的 680x598 固定尺寸、无边框自绘标题栏、
+     48px 橙渐变标题栏、10 层描边阴影、圆角 6、标题栏内 4 个胶囊 Tab、以及子页时的返回标题栏。
+     Tab 内的 16x16 Path 图标数据逐字取自原 MainWindow.xaml:100/110/121/136。
+     原版用 21 个 UserControl 叠放 + Visibility 切换；这里改用 ContentControl + ViewLocator（视觉等价）。
+     未还原：右上角「繁」圆形按钮（简繁切换，Linux 版没有本地化，不做点了没反应的控件）。
+     动效：PanRoot 命名给窗口开场动画，FxLayer 是不参与布局的涟漪层，见 Controls/UiAnimations.cs。 -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Campfire.Avalonia.Controls"
+        x:Class="Campfire.Avalonia.Views.MainWindow"
+        Width="680" Height="598" MinWidth="680" MinHeight="598"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        FontFamily="{DynamicResource FontMain}"
+        FontSize="13"
+        Title="Campfire">
+
+    <!-- PanRoot Margin=12 给阴影留白；整层参与窗口开场动画 -->
+    <Grid x:Name="PanRoot" Margin="12">
+
+        <!-- 10 层淡描边模拟窗口阴影（原 MainWindow.xaml:34-45） -->
+        <Border Margin="-10" CornerRadius="16" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.04" />
+        <Border Margin="-9"  CornerRadius="15" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.07" />
+        <Border Margin="-8"  CornerRadius="14" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.11" />
+        <Border Margin="-7"  CornerRadius="13" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.17" />
+        <Border Margin="-6"  CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.24" />
+        <Border Margin="-5"  CornerRadius="11" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.32" />
+        <Border Margin="-4"  CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.42" />
+        <Border Margin="-3"  CornerRadius="9"  BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.55" />
+        <Border Margin="-2"  CornerRadius="8"  BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.70" />
+        <Border Margin="-1"  CornerRadius="7"  BorderThickness="1" BorderBrush="{DynamicResource BrushShadowRing}" Opacity="0.90" />
+
+        <!-- PanSurface -->
+        <Border CornerRadius="6" Background="{DynamicResource BrushBackground}">
+            <Grid RowDefinitions="48,*">
+
+                <!-- ============ 标题栏 ============ -->
+                <Border Grid.Row="0" CornerRadius="6,6,0,0"
+                        Background="{DynamicResource BrushTitleBar}"
+                        PointerPressed="TitleBar_PointerPressed">
+                    <Grid Margin="18,0,8,0" ColumnDefinitions="Auto,*,Auto">
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- 动态营火徽标：40 帧帧条、10fps，见 Controls/CampfireLogo.cs。
+                                 帧源是用户提供的 Campfire_JE2_BE2.gif（透明背景，直接叠在橙渐变上）。 -->
+                            <local:CampfireLogo x:Name="Logo" Width="24" Height="24" Margin="0,0,9,0"
+                                                VerticalAlignment="Center" />
+                            <TextBlock Text="Campfire" FontSize="19" FontWeight="Bold"
+                                       Foreground="{DynamicResource BrushWhite}" VerticalAlignment="Center" />
+                            <!-- 原版 Campfire 文字右侧的空心状态小圆点；Grid 让光环与圆点重叠，
+                                 光环放大时不会把标题栏其他元素挤开。 -->
+                            <Grid Width="9" Height="9" Margin="8,0,0,0" VerticalAlignment="Center">
+                                <Ellipse x:Name="StatusDot" Width="9" Height="9"
+                                         Fill="Transparent" Stroke="{DynamicResource BrushWhite}"
+                                         StrokeThickness="1.4" />
+                                <Ellipse x:Name="PulseRing" Width="9" Height="9"
+                                         Stroke="{DynamicResource BrushWhite}" StrokeThickness="1.2"
+                                         Opacity="0" IsHitTestVisible="False" />
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- 根页：4 个胶囊 Tab，图标 + 文字（图标颜色跟随 RadioButton.Foreground） -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    IsVisible="{Binding !InSubPage}" Margin="8,0,0,0">
+                            <RadioButton Classes="pcl-tab" GroupName="Tabs"
+                                         IsChecked="{Binding HomeChecked}" Command="{Binding ShowHome}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Path Data="M2.5,8 L8,3 L13.5,8 M4,7 L4,13.5 L12,13.5 L12,7 M6.6,13.5 L6.6,10 L9.4,10 L9.4,13.5"
+                                          Stroke="{Binding $parent[RadioButton].Foreground}"
+                                          StrokeThickness="1.6" Width="16" Height="16" Stretch="None"
+                                          VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding L[TabHome]}" Margin="6,0,0,0" VerticalAlignment="Center"
+                                               Foreground="{Binding $parent[RadioButton].Foreground}" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Classes="pcl-tab" GroupName="Tabs"
+                                         IsChecked="{Binding MapsChecked}" Command="{Binding ShowMaps}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Path Data="M2.5,4 L6,2.5 L10,4 L13.5,2.5 L13.5,12 L10,13.5 L6,12 L2.5,13.5 Z M6,2.5 L6,12 M10,4 L10,13.5"
+                                          Stroke="{Binding $parent[RadioButton].Foreground}"
+                                          StrokeThickness="1.6" Width="16" Height="16" Stretch="None"
+                                          VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding L[TabMaps]}" Margin="6,0,0,0" VerticalAlignment="Center"
+                                               Foreground="{Binding $parent[RadioButton].Foreground}" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Classes="pcl-tab" GroupName="Tabs"
+                                         IsChecked="{Binding ToolsChecked}" Command="{Binding ShowTools}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Path Data="M2.5,6 L13.5,6 L13.5,12.5 L2.5,12.5 Z M6,6 L6,3.5 L10,3.5 L10,6 M2.5,9 L13.5,9"
+                                          Stroke="{Binding $parent[RadioButton].Foreground}"
+                                          StrokeThickness="1.6" Width="16" Height="16" Stretch="None"
+                                          VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding L[TabTools]}" Margin="6,0,0,0" VerticalAlignment="Center"
+                                               Foreground="{Binding $parent[RadioButton].Foreground}" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Classes="pcl-tab" GroupName="Tabs"
+                                         IsChecked="{Binding SettingsChecked}" Command="{Binding ShowSettings}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Path Data="M10,8 A2,2 0 1 1 6,8 A2,2 0 1 1 10,8 Z M6.9,2 L9.1,2 L9.5,3.7 L10.6,4.3 L12.3,3.7 L13.4,5.6 L12.1,6.8 L12.1,9.2 L13.4,10.4 L12.3,12.3 L10.6,11.7 L9.5,12.3 L9.1,14 L6.9,14 L6.5,12.3 L5.4,11.7 L3.7,12.3 L2.6,10.4 L3.9,9.2 L3.9,6.8 L2.6,5.6 L3.7,3.7 L5.4,4.3 L6.5,3.7 Z"
+                                          Stroke="{Binding $parent[RadioButton].Foreground}"
+                                          StrokeThickness="1.4" Width="16" Height="16" Stretch="None"
+                                          VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding L[TabSettings]}" Margin="6,0,0,0" VerticalAlignment="Center"
+                                               Foreground="{Binding $parent[RadioButton].Foreground}" />
+                                </StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+
+                        <!-- 子页：返回按钮 + 页名 -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    IsVisible="{Binding InSubPage}">
+                            <Button Classes="pcl-titlebar" Command="{Binding Back}" Margin="0,0,6,0">
+                                <Path Data="M10.5,3 L5.5,8 L10.5,13"
+                                      Stroke="{DynamicResource BrushWhite}" StrokeThickness="1.8"
+                                      Width="16" Height="16" Stretch="None" />
+                            </Button>
+                            <TextBlock Text="{Binding SubTitle}" FontSize="16" FontWeight="Bold"
+                                       Foreground="{DynamicResource BrushWhite}" VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <!-- 窗口按钮。原 MainWindow.xaml:149-168 的 Path 都不设 Width/Height，
+                             WPF 按几何边界自动居中；Avalonia 里若给减号的 M0,0 L10,0 套上 10x10
+                             框，那条线会贴在框顶 y=0，比居中的方框/叉号高 5px（三个按钮「不齐」）。
+                             这里把减号显式移到 y=6、叉号改用 12x12 框，三者几何中心统一在 (6,6)；
+                             线帽 Round 与 4px 按钮间距也照原版还原。 -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- 原版右上角「繁」圆按钮：Linux 版改造成简 / 繁 / EN 三语循环 -->
+                            <Button Classes="pcl-titlebar" Command="{Binding CycleLanguage}"
+                                    ToolTip.Tip="{Binding LanguageTooltip}" Margin="0,0,4,0">
+                                <TextBlock Text="{Binding LanguageLabel}" FontSize="12" FontWeight="Bold"
+                                           Foreground="{DynamicResource BrushWhite}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Button>
+                            <Button Classes="pcl-titlebar" Click="Minimize_Click">
+                                <Path Data="M1,6 L11,6" Stroke="{DynamicResource BrushWhite}"
+                                      StrokeThickness="1.6" StrokeLineCap="Round"
+                                      Width="12" Height="12" Stretch="None" />
+                            </Button>
+                            <Button Classes="pcl-titlebar" Click="Maximize_Click" Margin="4,0,0,0">
+                                <Rectangle Width="10" Height="10" RadiusX="1.5" RadiusY="1.5"
+                                           Stroke="{DynamicResource BrushWhite}" StrokeThickness="1.6" />
+                            </Button>
+                            <Button Classes="pcl-titlebar" Click="Close_Click" Margin="4,0,0,0">
+                                <Path Data="M1,1 L11,11 M11,1 L1,11" Stroke="{DynamicResource BrushWhite}"
+                                      StrokeThickness="1.6" StrokeLineCap="Round"
+                                      Width="12" Height="12" Stretch="None" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ============ 内容区 ============ -->
+                <!-- 所有页面统一限宽居中：全屏/超宽屏时内容不会被拉成细长条，
+                     680~1400 宽仍铺满；各页面内部自己用 ScrollViewer 处理窄窗口。 -->
+                <Grid Grid.Row="1" Margin="0,4,0,0">
+                    <ContentControl Content="{Binding Current}"
+                                    MaxWidth="1400" HorizontalAlignment="Stretch" />
+                </Grid>
+
+            </Grid>
+        </Border>
+
+        <!-- 动效层：点击涟漪专用。不参与布局、不拦截命中测试；
+             放在最后即位于视觉最上层，ClipToBounds 防止溢出窗口。 -->
+        <Canvas x:Name="FxLayer" IsHitTestVisible="False" ClipToBounds="True" />
+
+    </Grid>
+</Window>

@@ -1,0 +1,69 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：新增 Avalonia 11 GUI 工程。协议层与 Linux 适配层一律用 <Compile Include> 链接，
+     不复制、不引用 campfire.dll（LinkSession 是 internal 且没有 InternalsVisibleTo）。
+     原 Windows 工程全程零改动；Exclude 列表必须与 Campfire.Cli.csproj:30-39 逐字一致，防止协议漂移。 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Campfire.Avalonia</RootNamespace>
+    <AssemblyName>Campfire.Avalonia</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- 用正斜杠，Windows 与 Linux 的 MSBuild 都能解析 -->
+    <WinSrc>$(MSBuildThisFileDirectory)../../src/Campfire/</WinSrc>
+    <CliDir>$(MSBuildThisFileDirectory)../Campfire.Cli/</CliDir>
+    <!-- 锁死版本，便于在 Windows 侧备齐离线 NuGet 包 -->
+    <AvaloniaVersion>11.3.23</AvaloniaVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+    <!-- 不引 ReactiveUI / DataGrid / Diagnostics：压到最小离线包 -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 本工程自写源码：Views / ViewModels / Controls / Styles 的 code-behind / Bridge / Themes -->
+    <Compile Include="**/*.cs" Exclude="bin/**;obj/**" />
+    <!-- 阶段 1 的 Linux 适配层与裁剪桩，链接而非复制 -->
+    <Compile Include="$(CliDir)Linux/**/*.cs" Link="Shared/Linux/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(CliDir)Shims/**/*.cs" Link="Shared/Shims/%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- LinkSession.cs 的唯一改写副本（含 SkipProbe），必须与 CLI 用同一份 -->
+    <Compile Include="$(CliDir)Link/**/*.cs" Link="Shared/Link/%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- 协议层逐字不改地链接进来，防止与官方 Windows 客户端出现协议漂移 -->
+    <Compile Include="$(WinSrc)Hex.cs" Link="Shared/Link/Hex.cs" />
+    <Compile Include="$(WinSrc)Link/**/*.cs"
+             Exclude="$(WinSrc)Link/LinkSession.cs;
+                      $(WinSrc)Link/Diagnostics.cs;
+                      $(WinSrc)Link/Minecraft/GameAccount.cs;
+                      $(WinSrc)Link/Minecraft/LocalWorldFinder.cs;
+                      $(WinSrc)Link/Minecraft/JavaAgent.cs;
+                      $(WinSrc)Link/Minecraft/LanOpener.cs;
+                      $(WinSrc)Link/Minecraft/PlayerHeads.cs;
+                      $(WinSrc)Link/Minecraft/GameMappings.cs;
+                      $(WinSrc)Link/Runtime/EasyTierPackage.cs;
+                      $(WinSrc)Link/Runtime/ChildProcessJob.cs"
+             Link="Shared/Link/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- 与 Campfire.Cli.csproj 一致：注入游戏用的 3 个 jar（原仓库 src/java-agent/dist，GPL-3.0）。 -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../src/java-agent/dist/CampfireAgent.jar"  LogicalName="Campfire.CampfireAgent.jar" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../src/java-agent/dist/CampfireAttach.jar" LogicalName="Campfire.CampfireAttach.jar" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../src/java-agent/dist/CampfireHook.jar"   LogicalName="Campfire.CampfireHook.jar" />
+    <!-- 与 CLI 一致：老版本名字表；Linux/GameMappings.cs 由 $(CliDir)Linux/**/*.cs 链接进来。 -->
+    <EmbeddedResource Include="$(WinSrc)Link/Minecraft/Mappings/*.txt" LogicalName="Campfire.Mappings.%(Filename).txt" />
+  </ItemGroup>
+
+  <!-- 动态营火徽标的帧条（由用户提供的 Campfire_JE2_BE2.gif 解码合成，40 帧 x 96px）。 -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets/**" />
+  </ItemGroup>
+
+</Project>

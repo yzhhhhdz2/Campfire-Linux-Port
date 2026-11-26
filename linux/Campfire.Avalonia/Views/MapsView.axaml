@@ -1,0 +1,70 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：按用户决定「只删地图详情子页」，保留地图 Tab 与导入入口；
+     在线搜索/筛选/结果列表属于已裁剪功能，用说明条讲清楚，不留空壳。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.MapsView">
+
+    <ScrollViewer Margin="22,20,22,18" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <Border Classes="pcl-hint pcl-hint-orange">
+                <TextBlock Classes="pcl-note" Text="{Binding Notice}" />
+            </Border>
+
+            <!-- 第二批：真实扫描本机 saves 目录，只读展示，不写存档。 -->
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,8">
+                        <Button DockPanel.Dock="Right" Classes="pcl-text" Content="{Binding L[CommonRefresh]}"
+                                Command="{Binding RefreshWorlds}" />
+                        <TextBlock Classes="pcl-card-title" Text="{Binding L[MapsLocalWorlds]}" Margin="0" />
+                    </DockPanel>
+                    <ItemsControl ItemsSource="{Binding Worlds}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource BrushTile}" CornerRadius="3"
+                                        Padding="10,8" Margin="0,0,0,6">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"
+                                                   Foreground="{DynamicResource Brush1}" />
+                                        <TextBlock Classes="pcl-note" Text="{Binding Detail}"
+                                                   TextWrapping="Wrap" Margin="0,3,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Classes="pcl-note" Text="{Binding WorldsHint}"
+                               TextWrapping="Wrap" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[MapsLocalMaps]}" />
+                    <Button Classes="pcl-entry" Command="{Binding Import}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M2.5,4 L6,2.5 L10,4 L13.5,2.5 L13.5,12 L10,13.5 L6,12 L2.5,13.5 Z M6,2.5 L6,12 M10,4 L10,13.5"
+                                  Stroke="{DynamicResource Brush3}" StrokeThickness="1.5"
+                                  Width="16" Height="16" Stretch="None" Margin="0,0,12,0" />
+                            <StackPanel>
+                                <TextBlock Text="{Binding L[MapsImport]}" FontWeight="Bold" Foreground="{DynamicResource Brush1}" />
+                                <TextBlock Classes="pcl-note" Text="{Binding L[MapsImportDesc]}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[MapsNoSearch]}" />
+                    <TextBlock Classes="pcl-note"
+                               Text="{Binding L[MapsNoSearchDesc]}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

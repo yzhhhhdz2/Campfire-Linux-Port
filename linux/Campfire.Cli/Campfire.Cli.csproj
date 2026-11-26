@@ -1,0 +1,54 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：新建独立 net8.0 控制台工程；通过共享源码链接复用 Windows 工程的协议层，原工程零改动。 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Campfire</RootNamespace>
+    <AssemblyName>campfire</AssemblyName>
+    <!-- 显式控制编译项，便于精确剔除 Windows 专属文件 -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- 用正斜杠，Windows 与 Linux 的 MSBuild 都能解析 -->
+    <WinSrc>$(MSBuildThisFileDirectory)../../src/Campfire/</WinSrc>
+  </PropertyGroup>
+
+  <!-- 协议层逐字不改地链接进来，防止与官方 Windows 客户端出现协议漂移。
+       Windows 专属文件由 Linux/ 下的同名类型替代；已裁剪的功能由 Shims/ 提供最小实现。 -->
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Cli/**/*.cs" />
+    <Compile Include="Linux/**/*.cs" />
+    <Compile Include="Shims/**/*.cs" />
+    <!-- LinkSession.cs 是唯一物理复制并改写的原文件（原文件已在下方 Exclude 中排除）。 -->
+    <Compile Include="Link/**/*.cs" />
+    <Compile Include="$(WinSrc)Hex.cs" Link="Link/Hex.cs" />
+    <Compile Include="$(WinSrc)Link/**/*.cs"
+             Exclude="$(WinSrc)Link/LinkSession.cs;
+                      $(WinSrc)Link/Diagnostics.cs;
+                      $(WinSrc)Link/Minecraft/GameAccount.cs;
+                      $(WinSrc)Link/Minecraft/LocalWorldFinder.cs;
+                      $(WinSrc)Link/Minecraft/JavaAgent.cs;
+                      $(WinSrc)Link/Minecraft/LanOpener.cs;
+                      $(WinSrc)Link/Minecraft/PlayerHeads.cs;
+                      $(WinSrc)Link/Minecraft/GameMappings.cs;
+                      $(WinSrc)Link/Runtime/EasyTierPackage.cs;
+                      $(WinSrc)Link/Runtime/ChildProcessJob.cs"
+             Link="Link/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- 游戏内 Java Agent：3 个 jar 与源码都在原仓库 src/java-agent/（GPL-3.0）。
+       Java 侧是纯 JVM attach + 反射，跨平台；C# 侧的 Linux 适配见 Linux/GameAgent.cs。
+       编成嵌入资源，运行时解到数据目录，不依赖外部路径。 -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../src/java-agent/dist/CampfireAgent.jar"  LogicalName="Campfire.CampfireAgent.jar" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../src/java-agent/dist/CampfireAttach.jar" LogicalName="Campfire.CampfireAttach.jar" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../src/java-agent/dist/CampfireHook.jar"   LogicalName="Campfire.CampfireHook.jar" />
+    <!-- 1.7.2–1.14.3 没有官方 mappings，名字表随程序内嵌；见 Linux/GameMappings.cs 的 Legacy。 -->
+    <EmbeddedResource Include="$(WinSrc)Link/Minecraft/Mappings/*.txt" LogicalName="Campfire.Mappings.%(Filename).txt" />
+  </ItemGroup>
+
+</Project>

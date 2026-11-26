@@ -1,0 +1,23 @@
+<!-- Campfire Linux port — 基于 Xocio/Campfire v1.1.32 (GPL-3.0) 的 LobbyClient.cs 契约新建。 -->
+<!-- 修改：新增独立的 ASP.NET Core Minimal API 服务端；邀请码校验逐字复用原协议层 RoomCode.cs。 -->
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Campfire.Lobby</RootNamespace>
+    <AssemblyName>campfire-lobby</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- 用正斜杠，Windows 与 Linux 的 MSBuild 都能解析 -->
+    <WinSrc>$(MSBuildThisFileDirectory)../../src/Campfire/</WinSrc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="*.cs" />
+    <!-- 邀请码格式由原协议层定义，链接进来可保证服务端下发的码 100% 能被官方客户端解析。 -->
+    <Compile Include="$(WinSrc)Link/RoomCode.cs" Link="Protocol/RoomCode.cs" />
+  </ItemGroup>
+
+</Project>

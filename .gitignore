@@ -1,0 +1,34 @@
+# Build output
+bin/
+obj/
+artifacts/
+*.user
+*.suo
+
+# IDE
+.vs/
+.idea/
+.vscode/
+
+# Binaries: launchers, their backups and third-party libraries must never be committed
+*.dll
+*.exe
+*.exe.bak
+*.campfire.tmp
+
+# Runtime logs
+logs/
+*.log
+
+# Large offline artifacts: downloaded on demand by fetch-*.sh / step7.sh, never committed
+*.tar.gz
+*.zip
+*.nupkg
+*.sha256
+
+# Binary release output produced by linux/pack-release.sh (rebuilt by CI)
+linux/dist/
+
+# Upstream Android native libs (65 MB of prebuilt .so) are irrelevant to the
+# Linux port and too large for a slow proxied push. Android sources stay.
+src/android/easytier/src/main/jniLibs/

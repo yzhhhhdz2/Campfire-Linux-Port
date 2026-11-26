@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Campfire
+GenericName=Minecraft LAN multiplayer
+GenericName[zh_CN]=Minecraft 局域网联机
+GenericName[zh_TW]=Minecraft 區域網路連線
+Comment=Play Minecraft together over a virtual LAN using invite codes
+Comment[zh_CN]=用邀请码组建虚拟局域网，和朋友一起玩 Minecraft
+Comment[zh_TW]=用邀請碼組建虛擬區域網路，和朋友一起玩 Minecraft
+Exec=@EXEC@
+Icon=@ICON@
+Terminal=false
+Categories=Game;Network;Utility;
+Keywords=minecraft;lan;multiplayer;easytier;invite;
+StartupWMClass=Campfire.Avalonia
+StartupNotify=true
+SingleMainWindow=true

@@ -1,0 +1,134 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：主页。按原 Pages/HomePage.xaml 的版式还原——「多人联机」大卡片容器内
+     3 张大磁贴 + 下排 2 张小磁贴（每块都有圆形浅橙底 + 16x16 描边图标），
+     再接一张带 1/2/3 圆形编号的「联机步骤」卡片。
+     Icon Path 数据逐字取自原 HomePage.xaml:91/102/114/137/156。
+     差异：原下排是「最近房间 / 联机设置」，Linux 版没有房间历史，换成两个真实入口
+     （联机诊断 → 工具 Tab，联机设置 → 设置 Tab），避免出现点了没反应的控件。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.HomeView">
+
+    <ScrollViewer Margin="22,20,22,18" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <!-- ============ 多人联机（原 HeaderedContentControl PclCard） ============ -->
+            <Border Classes="pcl-card" Padding="16,14,16,16">
+                <StackPanel>
+
+                    <TextBlock Classes="pcl-card-title" Margin="0,0,0,12" Text="{Binding L[HomeMultiplayer]}" />
+
+                    <!-- 3 张大磁贴，列间距 10；MinHeight 让窗口拉高时磁贴不显得扁 -->
+                    <Grid ColumnDefinitions="*,10,*,10,*" MinHeight="124">
+                        <Button Grid.Column="0" Classes="pcl-tile" Command="{Binding CreateRoom}">
+                            <StackPanel>
+                                <Border Classes="pcl-tile-icon">
+                                    <Path Classes="pcl-glyph" Data="M8,2.5 L8,13.5 M2.5,8 L13.5,8" />
+                                </Border>
+                                <TextBlock Classes="pcl-tile-title" Text="{Binding L[HomeCreateRoom]}" />
+                                <TextBlock Classes="pcl-tile-text" Text="{Binding L[HomeCreateRoomDesc]}" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Grid.Column="2" Classes="pcl-tile" Command="{Binding JoinRoom}">
+                            <StackPanel>
+                                <Border Classes="pcl-tile-icon">
+                                    <Path Classes="pcl-glyph"
+                                          Data="M2.5,8 L9.5,8 M6.5,5 L9.5,8 L6.5,11 M9.5,2.5 L13.5,2.5 L13.5,13.5 L9.5,13.5" />
+                                </Border>
+                                <TextBlock Classes="pcl-tile-title" Text="{Binding L[HomeJoinRoom]}" />
+                                <TextBlock Classes="pcl-tile-text" Text="{Binding L[HomeJoinRoomDesc]}" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Grid.Column="4" Classes="pcl-tile" Command="{Binding OpenLobby}">
+                            <StackPanel>
+                                <Border Classes="pcl-tile-icon">
+                                    <Path Classes="pcl-glyph"
+                                          Data="M2.75,7 A4.25,4.25 0 1 1 11.25,7 A4.25,4.25 0 1 1 2.75,7 Z M10.1,10.1 L13.5,13.5" />
+                                </Border>
+                                <TextBlock Classes="pcl-tile-title" Text="{Binding L[HomeLobby]}" />
+                                <TextBlock Classes="pcl-tile-text" Text="{Binding L[HomeLobbyDesc]}" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!-- 下排 2 张小磁贴 -->
+                    <Grid ColumnDefinitions="*,10,*" Margin="0,10,0,0" MinHeight="62">
+                        <Button Grid.Column="0" Classes="pcl-tile" Padding="12,10,10,10"
+                                Command="{Binding OpenTools}">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Grid.Column="0" Classes="pcl-tile-icon-small">
+                                    <Path Classes="pcl-glyph" StrokeThickness="1.7"
+                                          Data="M14,8 A6,6 0 1 1 2,8 A6,6 0 1 1 14,8 Z M8,4.6 L8,8 L10.4,9.4" />
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding L[HomeDiagnostics]}" FontSize="14" FontWeight="Bold"
+                                               Foreground="{DynamicResource Brush1}" />
+                                    <TextBlock Classes="pcl-tile-text" Margin="0,3,0,0"
+                                               Text="{Binding L[HomeDiagnosticsDesc]}" />
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+
+                        <Button Grid.Column="2" Classes="pcl-tile" Padding="12,10,10,10"
+                                Command="{Binding OpenSettings}">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Grid.Column="0" Classes="pcl-tile-icon-small">
+                                    <Path Classes="pcl-glyph" StrokeThickness="1.7"
+                                          Data="M2.5,4 L13.5,4 M2.5,8 L13.5,8 M2.5,12 L13.5,12 M9,2 L9,6 M5,6 L5,10 M10.5,10 L10.5,14" />
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding L[HomeLinkSettings]}" FontSize="14" FontWeight="Bold"
+                                               Foreground="{DynamicResource Brush1}" />
+                                    <TextBlock Classes="pcl-tile-text" Margin="0,3,0,0"
+                                               Text="{Binding L[HomeLinkSettingsDesc]}" />
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- 状态放在容器底部：原版「多人联机」标题行右侧是留白，别挤在那儿 -->
+                    <TextBlock Classes="pcl-note" FontSize="11" Margin="0,10,0,0"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Session.StatusText}" />
+                </StackPanel>
+            </Border>
+
+            <!-- ============ 联机步骤（原 StepNumber / StepText） ============ -->
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[HomeSteps]}" />
+
+                    <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                        <Border Grid.Column="0" Classes="pcl-step-number">
+                            <TextBlock Classes="pcl-step-number-text" Text="1" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Classes="pcl-step-text"
+                                   Text="{Binding L[HomeStep1]}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                        <Border Grid.Column="0" Classes="pcl-step-number">
+                            <TextBlock Classes="pcl-step-number-text" Text="2" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Classes="pcl-step-text"
+                                   Text="{Binding L[HomeStep2]}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Border Grid.Column="0" Classes="pcl-step-number">
+                            <TextBlock Classes="pcl-step-number-text" Text="3" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Classes="pcl-step-text"
+                                   Text="{Binding L[HomeStep3]}" />
+                    </Grid>
+
+                    <TextBlock Classes="pcl-note" FontSize="11" Margin="0,12,0,0"
+                               Text="{Binding L[HomeStepsNote]}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

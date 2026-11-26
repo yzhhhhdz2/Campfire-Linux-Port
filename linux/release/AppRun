@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。
+# 新增：AppImage 入口。AppDir 布局由 build-appimage.sh 生成；本文件只负责
+# 设置运行时环境后 exec 自包含的 ELF 主程序，不做任何系统级写入。
+set -euo pipefail
+
+APPDIR="${APPDIR:-$(cd "$(dirname "$(readlink -f "$0")")" && pwd)}"
+BIN="$APPDIR/usr/bin"
+
+if [ ! -x "$BIN/Campfire.Avalonia" ] && [ ! -f "$BIN/Campfire.Avalonia" ]; then
+    echo "Campfire: 找不到主程序 $BIN/Campfire.Avalonia" >&2
+    exit 1
+fi
+# Windows 侧交叉编译时不会带 Unix 执行位，AppImage 构建脚本已 chmod；这里再兜一次。
+chmod +x "$BIN/Campfire.Avalonia" 2>/dev/null || true
+
+export CAMPFIRE_DATA_DIR="${CAMPFIRE_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/campfire}"
+mkdir -p "$CAMPFIRE_DATA_DIR"
+
+# 自包含 publish 把 15 个 native .so 放在主程序同目录。
+export LD_LIBRARY_PATH="$BIN${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+# 若打包时内置了 EasyTier zip，首次联机会从这里离线解压，不必联网。
+# 应用侧 EasyTierPackage.InstallAsync 读取 CAMPFIRE_EASYTIER_ZIP。
+for zip in "$APPDIR"/usr/lib/campfire/easytier-linux-*.zip; do
+    if [ -f "$zip" ]; then
+        export CAMPFIRE_EASYTIER_ZIP="$zip"
+        break
+    fi
+done
+
+# AppImage 内的桌面文件/图标让支持 AppImage 的启动器能识别。
+export XDG_DATA_DIRS="$APPDIR/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+
+exec "$BIN/Campfire.Avalonia" "$@"

@@ -1,0 +1,26 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：Avalonia 版应用资源入口。Colors.axaml 对应原 Themes/Colors.xaml 的静态起始色表，
+     Controls.axaml 对应原 Themes/Controls.xaml 的 Pcl* 控件样式。 -->
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Campfire.Avalonia"
+             x:Class="Campfire.Avalonia.App">
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Campfire.Avalonia/Styles/Colors.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Campfire.Avalonia/Styles/Controls.axaml" />
+    </Application.Styles>
+
+</Application>

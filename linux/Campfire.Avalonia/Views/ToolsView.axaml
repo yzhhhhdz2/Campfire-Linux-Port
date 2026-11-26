@@ -1,0 +1,73 @@
+<!-- Campfire Linux port — 修改自 Xocio/Campfire v1.1.32 (GPL-3.0)。 -->
+<!-- 修改：按用户决定删掉原「工具箱」卡片（启动器修复 / JRE / 模组检查 / 崩溃分析），
+     保留工具 Tab 并换成 Linux 上真实可读的状态项；用原版 PclCard 外观呈现。
+     第二批补上真实可点的操作：EasyTier 自检、自建大厅启动/停止、日志自动刷新开关。 -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Campfire.Avalonia.Views.ToolsView">
+
+    <ScrollViewer Margin="22,20,22,18" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[HomeDiagnostics]}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Diagnostics}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding ActionMessage}"
+                               TextWrapping="Wrap" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[ToolsEasyTier]}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Component}" />
+                    <Button Classes="pcl" Content="{Binding L[ToolsSelfCheck]}" HorizontalAlignment="Left"
+                            Command="{Binding CheckComponent}" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[ToolsLobby]}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Lobby}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button Classes="pcl" Content="{Binding L[ToolsLaunch]}" Command="{Binding StartLobby}" />
+                        <Button Classes="pcl" Content="{Binding L[CommonStop]}" Command="{Binding StopLobby}" Margin="8,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <TextBlock Classes="pcl-card-title" Text="{Binding L[ToolsAgent]}" />
+                    <TextBlock Classes="pcl-note" Text="{Binding Agent}" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="pcl-card">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,8">
+                        <Button DockPanel.Dock="Right" Classes="pcl-text" Content="{Binding L[CommonRefresh]}"
+                                Command="{Binding RefreshCommand}" />
+                        <CheckBox DockPanel.Dock="Left" Classes="pcl" IsChecked="{Binding LogAutoRefresh}"
+                                  Content="{Binding L[ToolsAutoRefresh]}" Margin="0,0,10,0" />
+                        <TextBlock Classes="pcl-card-title" Text="{Binding L[ToolsLogTitle]}" Margin="0" />
+                    </DockPanel>
+                    <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding LogLines}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="11"
+                                               Foreground="{DynamicResource BrushGray1}"
+                                               FontFamily="{DynamicResource FontCode}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

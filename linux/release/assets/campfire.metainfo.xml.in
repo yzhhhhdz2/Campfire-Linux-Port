@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AppStream metadata. @APP_ID@ / @VERSION@ / @DATE@ / @REPO_URL@ are
+     substituted by pack-release.sh or the GitHub Actions workflow. -->
+<component type="desktop-application">
+  <id>@APP_ID@</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Campfire</name>
+  <summary>Play Minecraft together over a virtual LAN</summary>
+  <summary xml:lang="zh_CN">用邀请码组建虚拟局域网，一起玩 Minecraft</summary>
+  <summary xml:lang="zh_TW">用邀請碼組建虛擬區域網路，一起玩 Minecraft</summary>
+  <description>
+    <p>Campfire creates a virtual LAN between friends with a short invite code, so a
+       Minecraft single-player world can be opened to LAN and joined without port
+       forwarding, a public server, or a premium account on the host side.</p>
+    <p>This is the Linux port of Xocio/Campfire v1.1.32, rebuilt on .NET 8 and
+       Avalonia 11. It ships as a self-contained application: no system .NET SDK or
+       runtime is required, and installation writes only inside the user's home
+       directory (works on immutable distributions such as Bazzite / Fedora Silverblue).</p>
+    <p>Features: invite-code rooms, automatic theme switching (light / dark, nine seed
+       colours, wallpaper sampling), local world browser, EasyTier component checks,
+       runtime logs, and simplified Chinese / traditional Chinese / English UI.</p>
+    <p>Minecraft is not included. The game client, its assets and a JDK must be
+       installed separately by the user; they are never redistributed by this project.</p>
+  </description>
+  <launchable type="desktop-id">@APP_ID@.desktop</launchable>
+  <url type="homepage">@REPO_URL@</url>
+  <url type="bugtracker">@REPO_URL@/issues</url>
+  <developer_name>Campfire Linux port contributors</developer_name>
+  <provides>
+    <binary>campfire</binary>
+  </provides>
+  <categories>
+    <category>Game</category>
+    <category>Network</category>
+  </categories>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </recommends>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="@VERSION@" date="@DATE@"/>
+  </releases>
+</component>
