@@ -31,3 +31,9 @@ linux/release/AppRun text eol=lf
 # Legacy obfuscation tables are consumed verbatim on Linux; keep LF everywhere.
 src/Campfire/Link/Minecraft/Mappings/*.txt text eol=lf
 
+
+# Campfire Linux 官网（静态站，GitHub Pages 用）
+website/** text eol=lf
+website/**/*.png binary
+# 规则文件本身必须是 LF，否则 Windows 上 checkout 后换行变成 CRLF 会影响解析
+.gitattributes text eol=lf
