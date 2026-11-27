@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campfire for Linux — 下载</title>
+<meta name="description" content="Campfire 的 Linux 移植版：邀请码联机、Minecraft 26.3 自动开放局域网。提供 AppImage 与 tar.gz 用户级安装包。">
+<link rel="icon" href="assets/campfire.png">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/campfire.png" alt="">
+      <span>Campfire</span><small>for Linux</small>
+    </a>
+    <nav class="topnav">
+      <a class="hide-small" href="https://github.com/yzhhhhdz2/Campfire-Linux-Port" data-i18n="navRepo">GitHub 仓库</a>
+      <a class="hide-small" href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/blob/main/linux/README.md" data-i18n="navDocs">移植文档</a>
+      <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases" data-i18n="navReleases">全部版本</a>
+      <button class="lang-btn" data-lang-btn title="切换语言">简</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <span class="kicker" id="heroKicker" data-i18n="heroKicker">免费开源</span>
+    <h1 data-i18n="heroTitle">在 Linux 上，和朋友一起玩</h1>
+    <p data-i18n="heroDesc">Windows 版 Campfire 的 Linux 移植。邀请码联机、动态主题，以及 Minecraft 26.3 自动开放局域网，都已在真机上验证通过。</p>
+    <div class="features">
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span data-i18n="feat1">邀请码直连联机</span></span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0M8 16a3 3 0 0 1 8 0M12 20h.01"/></svg><span data-i18n="feat2">MC 26.3 自动开局域网</span></span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="feat3">免 root · 自包含</span></span>
+    </div>
+  </div>
+
+  <section id="download">
+    <div class="section-head">
+      <h2 data-i18n="dlTitle">下载</h2>
+      <p data-i18n="dlDesc">选一个就行。两个成品包都是自包含的：不需要装 .NET，也不需要 root，不会改动系统目录。</p>
+    </div>
+    <div class="cards">
+
+      <article class="card primary" data-card="app">
+        <span class="badge" data-i18n="recommended">推荐</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div>
+        <h3 data-i18n="cardAppTitle">AppImage</h3>
+        <p class="desc" data-i18n="cardAppDesc">单文件、免安装，加执行位后直接运行。适合大多数发行版。</p>
+        <div class="file-line" data-file-name>Campfire-1.1.32-x86_64.AppImage</div>
+        <div class="card-meta"><span data-size>64.11 MB</span><span data-count>下载统计读取中</span></div>
+        <a class="btn btn-primary" data-dl-btn href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/Campfire-1.1.32-x86_64.AppImage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span data-i18n="btnDownload">下载</span></a>
+      </article>
+
+      <article class="card" data-card="tar">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+        <h3 data-i18n="cardTarTitle">tar.gz 安装包</h3>
+        <p class="desc" data-i18n="cardTarDesc">解压后运行 install.sh，会装好桌面图标、应用菜单和 campfire 命令。</p>
+        <div class="file-line" data-file-name>campfire-1.1.32-linux-x64.tar.gz</div>
+        <div class="card-meta"><span data-size>63.67 MB</span><span data-count>下载统计读取中</span></div>
+        <a class="btn btn-primary" data-dl-btn href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/campfire-1.1.32-linux-x64.tar.gz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span data-i18n="btnDownload">下载</span></a>
+      </article>
+
+      <article class="card" data-card="src">
+        <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+        <h3 data-i18n="cardSrcTitle">完整源码</h3>
+        <p class="desc" data-i18n="cardSrcDesc">GPL-3.0 要求的完整对应源码，含 Java Agent 与 40 份 Mappings 表。</p>
+        <div class="file-line" data-file-name>campfire-linux.tar.gz</div>
+        <div class="card-meta"><span data-size>0.69 MB</span><span data-count>下载统计读取中</span></div>
+        <a class="btn btn-primary" data-dl-btn href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/campfire-linux.tar.gz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span data-i18n="btnDownload">下载</span></a>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="cli">
+    <div class="section-head">
+      <h2 data-i18n="cliTitle">也可以用命令行</h2>
+      <p data-i18n="cliDesc">复制到终端执行，下载与安装一步到位。</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <button class="tab active" data-cmd-tab="app" data-i18n="tabApp">AppImage</button>
+        <button class="tab" data-cmd-tab="tar" data-i18n="tabTar">tar.gz</button>
+        <span class="spacer"></span>
+        <button class="btn btn-sm" id="copyCmd"><span data-i18n="btnCopy">复制命令</span></button>
+      </div>
+      <pre class="code" id="cmdText">curl -LO https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/Campfire-1.1.32-x86_64.AppImage
+chmod +x Campfire-1.1.32-x86_64.AppImage
+./Campfire-1.1.32-x86_64.AppImage</pre>
+    </div>
+  </section>
+
+  <section id="verify">
+    <div class="section-head"><h2 data-i18n="verifyTitle">校验下载</h2></div>
+    <div class="verify">
+      <p><span data-i18n="verifyDesc">Release 附带 SHA256SUMS，在同一个目录里执行：</span> <code>sha256sum -c SHA256SUMS</code></p>
+      <a class="btn btn-sm" id="sumLink" href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases/download/v1.1.32/SHA256SUMS" data-i18n="linkChecksum">下载 SHA256SUMS</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-links">
+      <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port">GitHub</a>
+      <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/blob/main/linux/README.md" data-i18n="navDocs">移植文档</a>
+      <a href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases" data-i18n="navReleases">全部版本</a>
+      <a href="admin.html" data-i18n="navAdmin">数据看板</a>
+    </div>
+    <p class="footer-note" data-i18n="footerLicense">基于 Xocio/Campfire v1.1.32，GPL-3.0 开源。Minecraft 与 JDK 不包含在下载包内。</p>
+    <p class="status-note"><span class="dot" id="statusDot"></span><span id="statusText" data-i18n="noteFallback">实时接口暂不可用，当前显示发布时的信息，下载仍然可用</span></p>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>

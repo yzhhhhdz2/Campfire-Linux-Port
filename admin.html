@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>下载数据看板 · Campfire for Linux</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/campfire.png">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/campfire.png" alt="">
+      <span>Campfire</span><small>for Linux</small>
+    </a>
+    <nav class="topnav">
+      <a href="index.html" data-i18n="admBack">返回官网</a>
+      <a class="hide-small" href="https://github.com/yzhhhhdz2/Campfire-Linux-Port" data-i18n="navRepo">GitHub 仓库</a>
+      <a class="hide-small" href="https://github.com/yzhhhhdz2/Campfire-Linux-Port/releases" data-i18n="navReleases">全部版本</a>
+      <button class="lang-btn" data-lang-btn title="切换语言">简</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="adm-header">
+    <div>
+      <h1 data-i18n="admTitle">下载数据看板</h1>
+      <p data-i18n="admSub">Campfire for Linux · Release 下载统计</p>
+    </div>
+    <div class="adm-actions">
+      <label class="switch"><input type="checkbox" id="autoRefresh"><span data-i18n="admAuto">自动刷新（每 2 分钟）</span></label>
+      <button class="btn btn-sm" id="refreshBtn"><span data-i18n="admRefresh">立即刷新</span></button>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span class="status-pill"><span class="dot" id="statusDot"></span><span id="statusText">…</span></span>
+    <span><span data-i18n="labelSource">数据源</span>: <b>GitHub Releases API</b></span>
+    <span><span data-i18n="labelVersion">当前版本</span>: <b id="stVersion">—</b></span>
+    <span><span data-i18n="labelUpdated">更新时间</span>: <b id="stUpdated">—</b></span>
+    <span><span data-i18n="labelQuota">API 剩余</span>: <b id="stQuota">—</b></span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="label" data-i18n="kpiTotal">累计下载</div>
+      <div class="value" id="kpiTotal">—</div>
+      <div class="sub" id="kpiTotalSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="label" data-i18n="kpiAssets">发布文件</div>
+      <div class="value" id="kpiAssets">—</div>
+      <div class="sub" id="kpiAssetsSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="label" data-i18n="kpiAppShare">AppImage 占比</div>
+      <div class="value" id="kpiApp">—</div>
+      <div class="sub" id="kpiAppSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="label" data-i18n="kpiDelta">较上次采样</div>
+      <div class="value" id="kpiDelta">—</div>
+      <div class="sub" id="kpiDeltaSub"></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="chart-box">
+      <h2 data-i18n="trendTitle">累计下载趋势</h2>
+      <p class="sub" data-i18n="trendSub">每次打开或刷新看板会记录一个快照</p>
+      <div class="chart-scroll"><svg class="chart" id="chart" viewBox="0 0 800 190" aria-hidden="true"></svg></div>
+      <p class="chart-empty" id="chartEmpty" hidden data-i18n="trendEmpty">历史快照还不足两个。</p>
+      <p class="chart-note" data-i18n="trendNote">趋势只保存在这个浏览器里。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2 data-i18n="sectionDetails">下载明细</h2>
+      <p id="clicksLine"></p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="colFile">文件</th>
+            <th data-i18n="colType">类型</th>
+            <th data-i18n="colSize">大小</th>
+            <th data-i18n="colDownloads">下载数</th>
+            <th data-i18n="colShare">占比</th>
+            <th data-i18n="colUpdated">更新于</th>
+            <th data-i18n="colAction">操作</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="export-row">
+      <button class="btn btn-sm" id="btnCsv"><span data-i18n="btnCsv">导出 CSV</span></button>
+      <button class="btn btn-sm" id="btnJson"><span data-i18n="btnJson">导出 JSON</span></button>
+      <button class="btn btn-sm" id="btnClear"><span data-i18n="btnClear">清空本机快照</span></button>
+    </div>
+  </section>
+
+  <section>
+    <div class="notes">
+      <h2 data-i18n="noteTitle">关于这些数据</h2>
+      <ul>
+        <li data-i18n="note1"></li>
+        <li data-i18n="note2"></li>
+        <li data-i18n="note3"></li>
+        <li data-i18n="note4"></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<script src="assets/site.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>
