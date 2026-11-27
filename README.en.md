@@ -21,6 +21,10 @@
 </p>
 
 <p align="center">
+  <b>Linux website</b>: <a href="https://yzhhhhdz2.github.io/Campfire-Linux-Port/">yzhhhhdz2.github.io/Campfire-Linux-Port</a> — download page and download dashboard
+</p>
+
+<p align="center">
   Community: <a href="https://t.me/CampfireGroup">Telegram group</a> · <a href="https://t.me/McCampfire">Telegram channel</a>
 </p>
 

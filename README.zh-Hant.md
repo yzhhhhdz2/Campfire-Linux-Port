@@ -21,6 +21,10 @@
 </p>
 
 <p align="center">
+  <b>Linux 官網</b>：<a href="https://yzhhhhdz2.github.io/Campfire-Linux-Port/">yzhhhhdz2.github.io/Campfire-Linux-Port</a> —— 下載頁與下載數據看板
+</p>
+
+<p align="center">
   交流：<a href="https://t.me/CampfireGroup">Telegram 群聊</a> · <a href="https://t.me/McCampfire">Telegram 頻道</a>
 </p>
 
